@@ -102,4 +102,17 @@ public class FragmentEntity extends AbsEntity{
 		this.tableSuffix = tableSuffix;
 	}
 
+	@Override
+	public String toString() {
+		return "FragmentEntity{" +
+				"title='" + title + '\'' +
+				", shard=" + shard +
+				", startId=" + startId +
+				", endId=" + endId +
+				", tableSuffix='" + tableSuffix + '\'' +
+				", id=" + id +
+				", createTime=" + createTime +
+				", optTime=" + optTime +
+				'}';
+	}
 }

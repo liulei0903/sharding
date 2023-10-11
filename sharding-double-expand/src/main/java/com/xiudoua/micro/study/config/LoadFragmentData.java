@@ -1,9 +1,9 @@
 package com.xiudoua.micro.study.config;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
+import com.xiudoua.micro.study.constant.CommonConstant;
+import com.xiudoua.micro.study.entity.FragmentEntity;
+import com.xiudoua.micro.study.service.IFragmentService;
+import com.xiudoua.micro.study.utils.JsonUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,10 +12,9 @@ import org.springframework.core.annotation.Order;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 
-import com.xiudoua.micro.study.constant.CommonConstant;
-import com.xiudoua.micro.study.entity.FragmentEntity;
-import com.xiudoua.micro.study.service.IFragmentService;
-import com.xiudoua.micro.study.utils.JsonUtil;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @desc
@@ -38,12 +37,14 @@ public class LoadFragmentData implements CommandLineRunner{
 		List<FragmentEntity> fragmentList = fragmentService.findEffectiveList();
 		if(fragmentList != null && !fragmentList.isEmpty()) {
 			redisTemplate.delete(CommonConstant.REDIS_KEY_EXPAND_HASH_DATA);
-			Map<String,String> map = new HashMap<String, String>();
-			for(FragmentEntity fragment : fragmentList) {
+			Map<String, String> map = new HashMap<String, String>();
+			for (FragmentEntity fragment : fragmentList) {
 				map.put(fragment.getStartId() + "_" + fragment.getEndId(), JsonUtil.objectToJson(fragment));
 			}
 			redisTemplate.opsForHash().putAll(CommonConstant.REDIS_KEY_EXPAND_HASH_DATA, map);
-			logger.info("往缓存中加载了{}条基础分库分表相关数据！",fragmentList.size());
+			logger.info("往缓存中加载了{}条基础分库分表相关数据！", fragmentList.size());
+			//打印加载信息
+			fragmentList.forEach(fragmentEntity -> logger.info(fragmentEntity.toString()));
 		}
 	}
 	
